@@ -1,0 +1,6 @@
+﻿To Do List
+- Acceleration force is still applied in air, implement grounding
+- Left and right reverse force application needs to be inverted
+- Experiment with adjusting rotation point for a more natural turning control and feel
+- Fine tune turning and acceleration variables
+- Simple rectangle mesh shape collides with the even the smallest mesh collider, need some sort of step offset or amend mesh collider shape
