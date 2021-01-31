@@ -13,6 +13,7 @@ public class MoveVehicle : MonoBehaviour
     {
         // Assign component first
         vehicle = GetComponent<Rigidbody>();
+        vehicle.angularDrag = 10000; //reduces angular drag so cube resists rotating on Y axis and does not topple over
     }
 
     void FixedUpdate() // consistent 0.2 ms physics updates
@@ -27,8 +28,6 @@ public class MoveVehicle : MonoBehaviour
         {
             // Can call this from Update() for good input detection, and the effects will take place on the next FixedUpdate()
             vehicle.AddForce(transform.forward * accelerationForce * Input.GetAxis("Vertical"));
-            // Unfortunately friction causes this to rotate on its Y axis and topple over forwards/backwards
-            // Temp workaround of freezing the Y axis rotation on the object for now. Maybe look into using wheel colliders instead.
         }
         
         if (Input.GetButton("Horizontal"))
