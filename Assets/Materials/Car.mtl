@@ -1,0 +1,20 @@
+# Created by Kenney (www.kenney.nl)
+
+newmtl dark(Clone)
+Kd 0.2235294 0.2352941 0.2745098
+
+newmtl glass(Clone)
+Kd 1 1 1
+
+newmtl metalGreen(Clone)
+Kd 0.04705882 0.8470588 0.6235294
+
+newmtl _defaultMat(Clone)
+Kd 0.9386792 0.9533962 1
+
+newmtl lightRed(Clone)
+Kd 0.9960784 0.2588235 0.2588235
+
+newmtl metalLight(Clone)
+Kd 0.6980392 0.6862745 0.8666667
+
