@@ -5,17 +5,13 @@ using UnityEngine;
 
 public class MoveVehicle : MonoBehaviour
 {
-    // Visible Params
     public float accelerationForce;
     public float rotationForce;
     public Rigidbody vehicle;
     
     void Start()
     {
-        // Assign component first
         vehicle = GetComponent<Rigidbody>();
-        //vehicle.angularDrag = 10000; //angular drag affects torque rotation so I have changed the object shape to a rectangle
-        // this will naturally prevent the object from toppling over as it will have a much lower centre of mass
     }
 
     void FixedUpdate() // consistent 0.2 ms physics updates
@@ -23,18 +19,21 @@ public class MoveVehicle : MonoBehaviour
 
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetButton("Vertical")) // AddForce forwards and backwards
+        if (Input.GetButton("Vertical"))
         {
-            // Can call this from Update() for good input detection, and the effects will take place on the next FixedUpdate()
             vehicle.AddForce(transform.forward * accelerationForce * Input.GetAxis("Vertical"), ForceMode.Acceleration);
         }
         
-        if (Input.GetButton("Horizontal")) // AddTorque to rotate on Y axis
+        if (Input.GetButton("Horizontal"))
         {
-            vehicle.AddTorque(transform.up * rotationForce * Input.GetAxis("Horizontal"));
+            Vector3 localVelocity = transform.InverseTransformDirection(vehicle.velocity); //global velocity transformed to local velocity
+            Debug.Log("Z axis speed value is: " + localVelocity.z);
+            float direction = (localVelocity.z > 0) ? 1f : -1f; //if z axis velocity is negative, invert torque direction.
+            vehicle.AddRelativeTorque(transform.up * rotationForce * Input.GetAxis("Horizontal") * direction);
         }
+        
+        
     }
 } 
