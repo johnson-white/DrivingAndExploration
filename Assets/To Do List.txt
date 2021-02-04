@@ -1,6 +1,5 @@
 ﻿To Do List
-- Improve grounding check
+- Acceleration force is still applied in air, implement grounding
 - Add exterior camera that follows vehicle object
-- Continue to tune vehicle properties: Acceleration Force, Rotation Force, Rigidbody: Mass, Drag, Angular Drag.
 - Experiment with a gear system for driving force to feel more natural at slower and higher speeds. Add max speed.
 - Experiment with adjusting rotation point for a more natural turning control and feel
