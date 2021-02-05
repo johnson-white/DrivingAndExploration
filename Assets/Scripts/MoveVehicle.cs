@@ -9,28 +9,32 @@ public class MoveVehicle : MonoBehaviour
     public float accelerationForce;
     public float rotationForce;
     public Rigidbody vehicle;
+    private GameObject FrontLeftWheel, FrontRightWheel;
     
-//    void Awake () { // Testing rotation issue with constant framerate, no effect
-//        QualitySettings.vSyncCount = 0;  // VSync must be disabled
-//        Application.targetFrameRate = 60;
-//    }
     void Start()
     {
         vehicle = GetComponent<Rigidbody>();
+        FrontLeftWheel = vehicle.transform.Find("FrontLeftWheel").gameObject; // Get specific child component
+        FrontRightWheel = vehicle.transform.Find("FrontRightWheel").gameObject;
     }
 
-//    void FixedUpdate() // Testing rotation issue
-//    {
-//        Movement();
-//    }
+    void FixedUpdate() // Testing rotation issue
+    {
+        
+    }
 
     void Update()
     {
-        //ApplyGravity(vehicle);
         Movement();
         bool g = Grounded();
         Debug.Log(g);
         
+        // Grabbing local coords of objects
+        Vector3 FLWpos = FrontLeftWheel.transform.localPosition;
+        Vector3 FRWpos = FrontRightWheel.transform.localPosition;
+        Debug.Log("<color=blue>FrontLeftWheel local position is - " + FLWpos + "</color>");
+        Debug.Log("<color=red>FrontRightWheel local position is - " + FRWpos + "</color>");
+        // Now that we have local positions, use them to create two BoxCasts
     }
 
     private void Movement()
@@ -42,22 +46,12 @@ public class MoveVehicle : MonoBehaviour
         
         if (Input.GetButton("Horizontal"))
         {
-            Vector3 localVelocity = transform.InverseTransformDirection(vehicle.velocity); //global velocity transformed to local velocity
-            // Debug.Log("Z axis speed value is: " + localVelocity.z);
-            float zAxisDirection = (localVelocity.z > -2f) ? 1f : -1f; //if z axis velocity is negative, invert torque direction.
-            float directionInput = Input.GetAxis("Horizontal");
-            float appliedRotationForce = rotationForce;
-//            if (directionInput <= 0) Testing rotation issue
-//            {
-//                appliedRotationForce *= 0.8f;
-//            }
-            var torque = transform.up * directionInput * rotationForce * zAxisDirection;
-            //Debug.Log(torque);
+            Vector3 localVelocity = transform.InverseTransformDirection(vehicle.velocity);
+            float zAxisDirection = (localVelocity.z > -2f) ? 1f : -1f;
+            var torque = transform.up * Input.GetAxis("Horizontal") * rotationForce * zAxisDirection;
             vehicle.AddTorque(torque);
         }
     }
-    
-    //limit angularvelocity?
 
     private bool Grounded() //cast ray down from vehicle to check if it's grounded
     {
@@ -72,10 +66,4 @@ public class MoveVehicle : MonoBehaviour
         RaycastHit hit1;
         return Physics.Raycast(vehiclePosition, pointDir, out hit1, 0.3f);
     }
-
-    private void ApplyGravity(Rigidbody rb) // Testing rotation issue
-    {
-        rb.AddForce(Vector3.down, ForceMode.VelocityChange);
-    }
-    
 } 

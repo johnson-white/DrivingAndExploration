@@ -1,5 +1,5 @@
 ﻿To Do List
-- Acceleration force is still applied in air, implement grounding
+- Improve the grounding check method
 - Add exterior camera that follows vehicle object
 - Experiment with a gear system for driving force to feel more natural at slower and higher speeds. Add max speed.
 - Experiment with adjusting rotation point for a more natural turning control and feel
