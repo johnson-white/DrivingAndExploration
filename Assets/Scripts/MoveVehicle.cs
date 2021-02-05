@@ -10,21 +10,27 @@ public class MoveVehicle : MonoBehaviour
     public float rotationForce;
     public Rigidbody vehicle;
     
+//    void Awake () { // Testing rotation issue with constant framerate, no effect
+//        QualitySettings.vSyncCount = 0;  // VSync must be disabled
+//        Application.targetFrameRate = 60;
+//    }
     void Start()
     {
         vehicle = GetComponent<Rigidbody>();
     }
 
-    void FixedUpdate() // consistent 0.2 ms physics updates
-    {
-
-    }
+//    void FixedUpdate() // Testing rotation issue
+//    {
+//        Movement();
+//    }
 
     void Update()
     {
+        //ApplyGravity(vehicle);
+        Movement();
         bool g = Grounded();
         Debug.Log(g);
-        Movement();
+        
     }
 
     private void Movement()
@@ -38,10 +44,20 @@ public class MoveVehicle : MonoBehaviour
         {
             Vector3 localVelocity = transform.InverseTransformDirection(vehicle.velocity); //global velocity transformed to local velocity
             // Debug.Log("Z axis speed value is: " + localVelocity.z);
-            float direction = (localVelocity.z > 0) ? 1f : -1f; //if z axis velocity is negative, invert torque direction.
-            vehicle.AddRelativeTorque(transform.up * rotationForce * Input.GetAxis("Horizontal") * direction);
+            float zAxisDirection = (localVelocity.z > -2f) ? 1f : -1f; //if z axis velocity is negative, invert torque direction.
+            float directionInput = Input.GetAxis("Horizontal");
+            float appliedRotationForce = rotationForce;
+//            if (directionInput <= 0) Testing rotation issue
+//            {
+//                appliedRotationForce *= 0.8f;
+//            }
+            var torque = transform.up * directionInput * rotationForce * zAxisDirection;
+            //Debug.Log(torque);
+            vehicle.AddTorque(torque);
         }
     }
+    
+    //limit angularvelocity?
 
     private bool Grounded() //cast ray down from vehicle to check if it's grounded
     {
@@ -55,6 +71,11 @@ public class MoveVehicle : MonoBehaviour
         
         RaycastHit hit1;
         return Physics.Raycast(vehiclePosition, pointDir, out hit1, 0.3f);
+    }
+
+    private void ApplyGravity(Rigidbody rb) // Testing rotation issue
+    {
+        rb.AddForce(Vector3.down, ForceMode.VelocityChange);
     }
     
 } 
