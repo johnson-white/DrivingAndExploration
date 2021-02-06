@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MoveVehicle : MonoBehaviour
 {
@@ -30,11 +26,6 @@ public class MoveVehicle : MonoBehaviour
         Gizmos.DrawWireCube(FLWpos, new Vector3(0.25f, 0.025f, 0.27f));
         Gizmos.color = new Color(255, 0, 0);
         Gizmos.DrawWireCube(FRWpos, new Vector3(0.25f, 0.025f, 0.27f));
-    }
-
-    void FixedUpdate() // Testing rotation issue
-    {
-        
     }
 
     void Update()

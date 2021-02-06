@@ -1,4 +1,5 @@
 ﻿To Do List
-- Add exterior camera that follows vehicle object
+- Limit angular velocity
+- Fine tune vehicle properties for more realistic deceleration
 - Experiment with a gear system for driving force to feel more natural at slower and higher speeds. Add max speed.
 - Experiment with adjusting rotation point for a more natural turning control and feel
