@@ -10,12 +10,26 @@ public class MoveVehicle : MonoBehaviour
     public float rotationForce;
     public Rigidbody vehicle;
     private GameObject FrontLeftWheel, FrontRightWheel;
+    private Vector3 FLWpos;
+    private Vector3 FRWpos;
     
     void Start()
     {
         vehicle = GetComponent<Rigidbody>();
         FrontLeftWheel = vehicle.transform.Find("FrontLeftWheel").gameObject; // Get specific child component
         FrontRightWheel = vehicle.transform.Find("FrontRightWheel").gameObject;
+        
+        FLWpos = FrontLeftWheel.transform.position;
+        FRWpos = FrontRightWheel.transform.position;
+    }
+
+    private void OnDrawGizmos()
+    {
+        //visualising boxcast
+        Gizmos.color = new Color(0, 0, 255);
+        Gizmos.DrawWireCube(FLWpos, new Vector3(0.25f, 0.025f, 0.27f));
+        Gizmos.color = new Color(255, 0, 0);
+        Gizmos.DrawWireCube(FRWpos, new Vector3(0.25f, 0.025f, 0.27f));
     }
 
     void FixedUpdate() // Testing rotation issue
@@ -26,44 +40,44 @@ public class MoveVehicle : MonoBehaviour
     void Update()
     {
         Movement();
-        bool g = Grounded();
-        Debug.Log(g);
-        
-        // Grabbing local coords of objects
-        Vector3 FLWpos = FrontLeftWheel.transform.localPosition;
-        Vector3 FRWpos = FrontRightWheel.transform.localPosition;
-        Debug.Log("<color=blue>FrontLeftWheel local position is - " + FLWpos + "</color>");
-        Debug.Log("<color=red>FrontRightWheel local position is - " + FRWpos + "</color>");
-        // Now that we have local positions, use them to create two BoxCasts
     }
 
     private void Movement()
     {
         if (Input.GetButton("Vertical"))
         {
-            vehicle.AddForce(transform.forward * accelerationForce * Input.GetAxis("Vertical"), ForceMode.Acceleration);
+            if (IsGrounded())
+            {
+                            vehicle.AddForce(transform.forward * accelerationForce * Input.GetAxis("Vertical"), ForceMode.Acceleration);
+            }
         }
         
         if (Input.GetButton("Horizontal"))
         {
-            Vector3 localVelocity = transform.InverseTransformDirection(vehicle.velocity);
-            float zAxisDirection = (localVelocity.z > -2f) ? 1f : -1f;
-            var torque = transform.up * Input.GetAxis("Horizontal") * rotationForce * zAxisDirection;
-            vehicle.AddTorque(torque);
+            if (IsGrounded())
+            {
+                Vector3 localVelocity = transform.InverseTransformDirection(vehicle.velocity);
+                float zAxisDirection = (localVelocity.z > -2f) ? 1f : -1f;
+                var torque = transform.up * Input.GetAxis("Horizontal") * rotationForce * zAxisDirection;
+                vehicle.AddTorque(torque);
+            }
         }
     }
 
-    private bool Grounded() //cast ray down from vehicle to check if it's grounded
+    private bool IsGrounded()
     {
-        Transform vehicleTransform;
-        Vector3 down = new Vector3(0f, -0.3f, 0f);
-        Vector3 pointDir = (vehicleTransform = vehicle.transform).TransformDirection(down);
-        // Debug.Log("<color=yellow>pointDir - " + pointDir + "</color>");
-        Vector3 vehiclePosition = vehicleTransform.position; //using centre bottom of vehicle, can implement for wheel traction if wanted in the future
-        // Debug.Log("<color=red>vehiclePosition - " + vehiclePosition + "</color>");
-        Debug.DrawRay(vehiclePosition, pointDir, Color.red);
-        
-        RaycastHit hit1;
-        return Physics.Raycast(vehiclePosition, pointDir, out hit1, 0.3f);
+        // Grabbing global coords of temp objects so I can use gizmos to draw a wire box, will use local position and remove temp objects later
+        FLWpos = FrontLeftWheel.transform.position;
+        FRWpos = FrontRightWheel.transform.position;
+        //Debug.Log("<color=blue>FrontLeftWheel local position is - " + FLWpos + "</color>");
+        //Debug.Log("<color=red>FrontRightWheel local position is - " + FRWpos + "</color>");
+        // Now that we have local positions, use them to create two BoxCasts
+        Vector3 boxShape = new Vector3(0.25f, 0.025f, 0.27f);
+        int FLWOverlap = Physics.OverlapBox(FLWpos, boxShape).Length; //always returns at least 1 as it is overlapping with the vehicle's collision mesh
+        Debug.Log("<color=blue>FLWOverlap count: " + FLWOverlap + "</color>");
+        int FRWOverlap = Physics.OverlapBox(FRWpos, boxShape).Length;
+        Debug.Log("<color=red>FRWOverlap: count" + FRWOverlap + "</color>");
+
+        return (FLWOverlap + FRWOverlap) > 2;
     }
 } 
