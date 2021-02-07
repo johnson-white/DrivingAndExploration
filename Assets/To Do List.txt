@@ -1,5 +1,5 @@
 ﻿To Do List
-- Limit angular velocity
+- Improve Overlap Boxcast dimensions for better practical application of ground checks.
 - Fine tune vehicle properties for more realistic deceleration
 - Experiment with a gear system for driving force to feel more natural at slower and higher speeds. Add max speed.
 - Experiment with adjusting rotation point for a more natural turning control and feel

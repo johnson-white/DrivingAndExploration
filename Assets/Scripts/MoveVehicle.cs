@@ -41,33 +41,34 @@ public class MoveVehicle : MonoBehaviour
     {
         if (Input.GetButton("Vertical"))
         {
-            //if (IsGrounded())
-            //{
+            if (IsGrounded())
+            {
                             vehicle.AddForceAtPosition(transform.forward * accelerationForce * Input.GetAxis("Vertical"), centreOfMass.position);
-            //}
+            }
         }
         
         if (Input.GetButton("Horizontal"))
         {
-            //if (IsGrounded())
-            //{
-                float localVelocity = transform.InverseTransformDirection(vehicle.velocity).z;
+            if (IsGrounded())
+            {
+                float localVelocity = transform.InverseTransformDirection(vehicle.velocity).z; // velocity
                 float zAxisDirection;
                 if (localVelocity > 2f)
                 {
                     zAxisDirection = 1f;
-                } else if (localVelocity < -2f)
+                } else if (localVelocity < -2f) 
                 {
                     zAxisDirection = -1f;
                 }
-                else
+                else // if at very low speeds, do not turn. Prevents turning fluctuating between forward and reverse directions.
+                     // Also acts as a full steering lock 
                 {
                     zAxisDirection = 0f;
                 }
 
                 var torque = transform.up * Input.GetAxis("Horizontal") * rotationForce * zAxisDirection;
                 vehicle.AddTorque(torque);
-            //}
+            }
         }
     }
 
