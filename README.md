@@ -15,4 +15,5 @@ Vehicle mechanics (using Rigidbody):
 - Vehicle cannot easily turn at very low speeds
 - Implemented correct/realistic reverse turning
 
+Vehicle's 3D Model was "kit bashed" using Asset Forge 2 by Kenney (https://kenney.itch.io/assetforge).
 ![](https://github.com/bM7tcHF88GBxDni/README-GIF-Storage/blob/main/car%20453px.gif)
