@@ -13,5 +13,6 @@ Vehicle mechanics (using Rigidbody):
 - Vehicle can only be driven when front wheels are grounded
 - Vehicle has a turning radius
 - Vehicle cannot easily turn at very low speeds
-- Implement correct/realistic reverse turning
+- Implemented correct/realistic reverse turning
 
+![](https://github.com/bM7tcHF88GBxDni/README-GIF-Storage/blob/main/car%20453px.gif)
