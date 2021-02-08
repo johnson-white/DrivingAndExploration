@@ -13,7 +13,9 @@ Vehicle mechanics (using Rigidbody):
 - Vehicle can only be driven when front wheels are grounded
 - Vehicle has a turning radius
 - Vehicle cannot easily turn at very low speeds
-- Implemented correct/realistic reverse turning
+- Vehicle has correct/realistic reverse turning
+- Centre of mass of vehicle has been posiitoned several float units behind the main object for the driving force to feel more natural.
+- Rigidbody properties have to be constantly fine tuned to keep the gameplay tight.
 
 Vehicle's 3D Model was "kit bashed" using Asset Forge 2 by Kenney (https://kenney.itch.io/assetforge).
 ![](https://github.com/bM7tcHF88GBxDni/README-GIF-Storage/blob/main/car%20453px.gif)
