@@ -4,11 +4,13 @@ public class MoveVehicle : MonoBehaviour
 {
     public float accelerationForce;
     public float rotationForce;
+    public float strafeForce;
     public Rigidbody vehicle;
     private GameObject FrontLeftWheel, FrontRightWheel;
     private Vector3 FLWpos;
     private Vector3 FRWpos;
     private Transform centreOfMass;
+    public Vector3 boxShape = new Vector3(0.25f, 0.04f, 0.27f);
     
     void Start()
     {
@@ -27,9 +29,9 @@ public class MoveVehicle : MonoBehaviour
     {
         //visualising FWD boxcast
         Gizmos.color = new Color(0, 0, 255);
-        Gizmos.DrawWireCube(FLWpos, new Vector3(0.25f, 0.04f, 0.27f));
+        Gizmos.DrawWireCube(FLWpos, boxShape);
         Gizmos.color = new Color(255, 0, 0);
-        Gizmos.DrawWireCube(FRWpos, new Vector3(0.25f, 0.04f, 0.27f));
+        Gizmos.DrawWireCube(FRWpos, boxShape);
     }
 
     void Update()
@@ -66,8 +68,15 @@ public class MoveVehicle : MonoBehaviour
                     zAxisDirection = 0f;
                 }
 
-                var torque = transform.up * Input.GetAxis("Horizontal") * rotationForce * zAxisDirection;
+                var h = Input.GetAxis("Horizontal");
+                
+                var torque = transform.up * h * rotationForce * zAxisDirection;
                 vehicle.AddTorque(torque);
+                
+                // adding horizontal force
+                var strafe = (h > 0) ? Vector3.right : Vector3.left;
+                strafe *= strafeForce * zAxisDirection;
+                vehicle.AddForceAtPosition(strafe, centreOfMass.position, ForceMode.Acceleration);
             }
         }
     }
@@ -78,7 +87,7 @@ public class MoveVehicle : MonoBehaviour
         FLWpos = FrontLeftWheel.transform.position;
         FRWpos = FrontRightWheel.transform.position;
         // Now that we have local positions, use them to create two BoxCasts
-        Vector3 boxShape = new Vector3(0.25f, 0.04f, 0.27f);
+        
         int FLWOverlap = Physics.OverlapBox(FLWpos, boxShape).Length; //always returns at least 1 as it is overlapping with the vehicle's collision mesh
         Debug.Log("<color=blue>FLWOverlap count: " + FLWOverlap + "</color>");
         int FRWOverlap = Physics.OverlapBox(FRWpos, boxShape).Length;
