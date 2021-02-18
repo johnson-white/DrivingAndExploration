@@ -1,5 +1,5 @@
 # DrivingAndExploration
-Creating vehicle mechanics for a driving and exploration project. This project has been in development since 29 Jan 2021 week. 11 Feb 2021, JetBrains Rider refusing to launch. Project was coming to an end anyway, cancelled in favour of returning to Web Development.
+Creating vehicle mechanics for a driving and exploration project. This project has been in development since 29 Jan 2021 week.
 
 I am experimenting with (basic) physics based gameplay in this project, unlike the Character Controller in my FirstPersonProject which implemented movement by transforming GameObject vectors directly. The exploration aspect of this project is referring to 3D modelling and level design which will begin much later on.
 
