@@ -1,4 +1,5 @@
 ﻿To Do List
-- AddForce after applying torque in turning direction.
 - Fine tune vehicle properties for more realistic deceleration
+- Create a coroutine to continue adding a weakening acceleration force after Vertical input stops.
+- Test new box colliders without CentreOfMass.position when adding force.
 - Experiment with a gear system for driving force to feel more natural at slower and higher speeds. Add max speed.

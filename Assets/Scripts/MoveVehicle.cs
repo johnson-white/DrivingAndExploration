@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class MoveVehicle : MonoBehaviour
 {
@@ -39,15 +40,38 @@ public class MoveVehicle : MonoBehaviour
         Movement();
     }
 
+    private IEnumerator ResistDrag()
+    {
+        Debug.Log("<color=yellow>Resist Drag called </color>");
+        var resistAcceleration = accelerationForce;
+        for (int i = 0; i == 20; i++) // run 20 times, 3.2 seconds
+        {
+            if (Input.GetAxis("Vertical") > 0f) yield break; // if player starts accelerating again, stop coroutine here
+            vehicle.AddForce(transform.forward * resistAcceleration);
+            resistAcceleration *= 0.9f;
+            yield return null;// new WaitForSeconds(.1f); // runs once every 0.1 seconds
+            Debug.Log("<color=red>Loop: "+ i +"</color>");
+            Debug.Log("<color=blue>resistAcceleration: "+ resistAcceleration +"</color>");
+        }
+    }
+
     private void Movement()
     {
         if (Input.GetButton("Vertical"))
         {
             if (IsGrounded())
             {
-                var v = Input.GetAxis("Horizontal");
-                accelerationForce *= (v > 0) ? 1f : 0.2f; // if input is negative, make the deacceleration force weaker
-                vehicle.AddForceAtPosition(transform.forward * accelerationForce * v, centreOfMass.position);
+                var v = Input.GetAxis("Vertical");
+                var applyForce = (v >= 0.1f) ? accelerationForce : accelerationForce * 0.8f; // if input is negative, make the deacceleration force weaker
+                //Debug.Log("<color=yellow>applyForce is: "+applyForce+"</color>");
+                vehicle.AddForceAtPosition(transform.forward * applyForce * v, centreOfMass.position);
+
+                if (Input.GetButtonUp("Vertical"))
+                {
+                    IEnumerator rd = ResistDrag();
+                    StartCoroutine(rd);
+                    Debug.Log("asdasdasdsd");
+                }
             }
         }
         
@@ -91,9 +115,9 @@ public class MoveVehicle : MonoBehaviour
         // Now that we have local positions, use them to create two BoxCasts
         
         int FLWOverlap = Physics.OverlapBox(FLWpos, boxShape).Length; //always returns at least 1 as it is overlapping with the vehicle's collision mesh
-        Debug.Log("<color=blue>FLWOverlap count: " + FLWOverlap + "</color>");
+        //Debug.Log("<color=blue>FLWOverlap count: " + FLWOverlap + "</color>");
         int FRWOverlap = Physics.OverlapBox(FRWpos, boxShape).Length;
-        Debug.Log("<color=red>FRWOverlap: count" + FRWOverlap + "</color>");
+        //Debug.Log("<color=red>FRWOverlap: count" + FRWOverlap + "</color>");
 
         return (FLWOverlap + FRWOverlap) > 2;
     }
