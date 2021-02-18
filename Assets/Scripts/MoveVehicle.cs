@@ -45,7 +45,9 @@ public class MoveVehicle : MonoBehaviour
         {
             if (IsGrounded())
             {
-                            vehicle.AddForceAtPosition(transform.forward * accelerationForce * Input.GetAxis("Vertical"), centreOfMass.position);
+                var v = Input.GetAxis("Horizontal");
+                accelerationForce *= (v > 0) ? 1f : 0.2f; // if input is negative, make the deacceleration force weaker
+                vehicle.AddForceAtPosition(transform.forward * accelerationForce * v, centreOfMass.position);
             }
         }
         
