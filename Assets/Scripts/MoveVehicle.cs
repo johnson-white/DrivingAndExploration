@@ -43,34 +43,30 @@ public class MoveVehicle : MonoBehaviour
     public IEnumerator ResistDrag()
     {
         Debug.Log("<color=yellow>Resist Drag called </color>");
-        var resistAcceleration = accelerationForce;
-        Debug.Log("<color=red>resistAcceleration outside loop"+resistAcceleration+" </color>");
-        
-        //loop does not run
-        for (var i = 0; i < 50; i++) // run 5 seconds
-        {
-            Debug.Log("<color=cyan>"+i+"</color>");
+        var resistAcceleration = accelerationForce * 0.8f; //reducing the acceleration force as its unlikely the vehicle is at max acceleration
+        Debug.Log("<color=blue>resistAcceleration outside loop: "+ resistAcceleration +" </color>");
 
-            if (Input.GetAxis("Vertical") > 0.1f)
+        for (var i = 0; i < 25; i++) // run for 2.5 seconds
+        {
+            if (Input.GetAxis("Vertical") == 1f) // if player starts accelerating again, stop coroutine here
             {
-                Debug.Log("yield break");
-                yield break; // if player starts accelerating again, stop coroutine here
+                Debug.Log(Input.GetAxis("Vertical"));
+                Debug.Log("<color=red>Yield break</color>");
+                yield break; 
             }
-            vehicle.AddForce(transform.forward * resistAcceleration);
-            //resistAcceleration *= 0.95f;
+            vehicle.AddForce(vehicle.transform.forward * resistAcceleration, ForceMode.Acceleration);
+            resistAcceleration *= 0.95f;
+            Debug.Log("<color=purple>resistAcceleration inside loop: "+ resistAcceleration +"</color>");
+
             yield return new WaitForSeconds(0.1f); // runs once every 0.1 seconds
-            
-            Debug.Log("<color=red>Loop: "+ i +"</color>");
-            Debug.Log("<color=blue>resistAcceleration inside loop: "+ resistAcceleration +"</color>");
         }
         
-        //this runs
         Debug.Log("<color=green>After loop </color>"); 
     }
 
     private void Movement()
     {
-        if (Input.GetButtonUp("Vertical"))
+        if (Input.GetButtonUp("Vertical") && Input.GetAxis("Vertical") > 0f)
         {
             StartCoroutine(ResistDrag());
         }
@@ -80,8 +76,7 @@ public class MoveVehicle : MonoBehaviour
             if (IsGrounded())
             {
                 var v = Input.GetAxis("Vertical");
-                var applyForce = (v >= 0.1f) ? accelerationForce : accelerationForce * 0.8f; // if input is negative, make the deacceleration force weaker
-                //Debug.Log("<color=yellow>applyForce is: "+applyForce+"</color>");
+                var applyForce = (v >= 0.1f) ? accelerationForce : accelerationForce * 0.7f; // if input is negative, make the deacceleration force weaker
                 vehicle.AddForceAtPosition(transform.forward * applyForce * v, centreOfMass.position);
             }
         }

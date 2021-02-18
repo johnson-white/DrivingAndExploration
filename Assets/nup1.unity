@@ -893,7 +893,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   accelerationForce: 150
   rotationForce: 30000
-  strafeForce: 2
+  strafeForce: 1.5
   vehicle: {fileID: 0}
   boxShape: {x: 0.28, y: 0.19, z: 0.58}
 --- !u!54 &1470699467
