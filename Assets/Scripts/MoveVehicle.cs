@@ -161,7 +161,7 @@ public class MoveVehicle : MonoBehaviour
                 }
                 else
                 {
-                    applyForce = accelerationForce * 1.2f;
+                    applyForce = accelerationForce * 1.4f; //applying a little extra force to further constrain ResistDrag() exponential speed issue
                 }
                 
                 vehicle.AddForceAtPosition(transform.forward * applyForce * v, centreOfMass.position);
