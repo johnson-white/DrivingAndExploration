@@ -4,6 +4,7 @@ using UnityEngine;
 public class MoveVehicle : MonoBehaviour
 {
     public float accelerationForce;
+    public float brakingForce;
     public float rotationForce;
     public float strafeForce;
     public Rigidbody vehicle;
@@ -43,7 +44,7 @@ public class MoveVehicle : MonoBehaviour
     public IEnumerator ResistDrag()
     {
         Debug.Log("<color=yellow>Resist Drag called </color>");
-        var resistAcceleration = accelerationForce * 0.8f; //reducing the acceleration force as its unlikely the vehicle is at max acceleration
+        var resistAcceleration = accelerationForce * 0.7f; //reducing the acceleration force as its unlikely the vehicle is at max acceleration
         Debug.Log("<color=blue>resistAcceleration outside loop: "+ resistAcceleration +" </color>");
 
         for (var i = 0; i < 25; i++) // run for 2.5 seconds
@@ -76,7 +77,19 @@ public class MoveVehicle : MonoBehaviour
             if (IsGrounded())
             {
                 var v = Input.GetAxis("Vertical");
-                var applyForce = (v >= 0.1f) ? accelerationForce : accelerationForce * 0.7f; // if input is negative, make the deacceleration force weaker
+                //var applyForce = (v >= 0.1f) ? accelerationForce : accelerationForce * 0.7f; // if input is negative, make the deacceleration force weaker
+
+                var applyForce = accelerationForce;
+                float localVelocity = transform.InverseTransformDirection(vehicle.velocity).z; // velocity
+                if (localVelocity > 0f && v < 0f) // if driving forward and input is reverse
+                {
+                    applyForce = brakingForce;
+                }
+                else
+                {
+                    applyForce = accelerationForce;
+                }
+                
                 vehicle.AddForceAtPosition(transform.forward * applyForce * v, centreOfMass.position);
             }
         }

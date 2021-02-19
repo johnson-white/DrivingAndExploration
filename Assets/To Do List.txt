@@ -1,5 +1,4 @@
 ﻿To Do List
-- Use accelerationForce for 100% reverse force again. Introduce and use braking variable as relying on a percentage of accelerationForce is too finicky.
 - Fine tune vehicle properties for more realistic deceleration
 - Fine tune box colliders for FWD and RWD driving.
 - Test new box colliders without CentreOfMass.position when adding force.

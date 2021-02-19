@@ -213,6 +213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   accelerationForce: 2
+  brakingForce: 0
   rotationForce: 1.5
   strafeForce: 0
   vehicle: {fileID: 0}
@@ -355,6 +356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   accelerationForce: 10
+  brakingForce: 0
   rotationForce: 10
   strafeForce: 0
   vehicle: {fileID: 0}
@@ -891,7 +893,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17e6711484330464f8993342ccbaad0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  accelerationForce: 150
+  accelerationForce: 250
+  brakingForce: 200
   rotationForce: 30000
   strafeForce: 1.5
   vehicle: {fileID: 0}
@@ -2096,6 +2099,7 @@ GameObject:
   - component: {fileID: 8868271597489684852}
   - component: {fileID: 6977104686243748279}
   - component: {fileID: 8868271597489684851}
+  - component: {fileID: 8868271597489684856}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -2125,10 +2129,10 @@ BoxCollider:
   m_GameObject: {fileID: 8868271597489684849}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 0.22, z: 0.65}
-  m_Center: {x: 0, y: 0.71, z: -1.16}
+  m_Center: {x: 0, y: 0.71, z: 1.17}
 --- !u!65 &8868271597489684852
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2181,6 +2185,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.1, y: 0.22, z: 2.7}
   m_Center: {x: -0.45, y: 0.71, z: 0}
+--- !u!65 &8868271597489684856
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8868271597489684849}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.22, z: 0.65}
+  m_Center: {x: 0, y: 0.71, z: 1.17}
 --- !u!1 &8868271598566299570
 GameObject:
   m_ObjectHideFlags: 0
