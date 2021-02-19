@@ -14,6 +14,9 @@ public class MoveVehicle : MonoBehaviour
     private Vector3 FRWpos;
     private Transform centreOfMass;
     public Vector3 boxShape = new Vector3(0.25f, 0.04f, 0.27f);
+
+    private float maxResistAcceleration;
+    private float sumResistAcceleration = 0f;
     
     void Start()
     {
@@ -24,6 +27,8 @@ public class MoveVehicle : MonoBehaviour
         FrontRightWheel = vehicle.transform.Find("FrontRightWheel").gameObject;
         FLWpos = FrontLeftWheel.transform.position;
         FRWpos = FrontRightWheel.transform.position;
+
+        maxResistAcceleration = accelerationForce * 0.7f;
         
         centreOfMass = vehicle.transform.Find("CentreOfMass").gameObject.transform;
     }
@@ -40,52 +45,78 @@ public class MoveVehicle : MonoBehaviour
     void Update()
     {
         Movement();
+        ConstrainResistDrag();
     }
-    
-    private bool resistingDrag = false;
+
+    private void ConstrainResistDrag()
+    {
+            if (coroutinesList.Count > 1) // if coroutine already running, stop all coroutines except the latest one
+            {
+                Debug.Log("<color=yellow>Identified multiple coroutines.</color>");
+                for (var c = 0; c < coroutinesList.Count; c++)
+                {
+                    Debug.Log("<color=blue>Starting closure. Loop: "+c+"</color><color=blue> coroutinesList Length: "+coroutinesList.Count+"</color>");
+                    StopCoroutine(coroutinesList[c]);
+                    Debug.Log("<color=red>Removing index "+c+" from list</color>");
+                    coroutinesList.RemoveAt(c);
+                    Debug.Log("<color=red>Removed index. coroutinesList length is: "+coroutinesList.Count+"</color>");
+                }
+                Debug.Log("<color=green>Closure loop finished. coroutinesList length is: "+coroutinesList.Count+"</color>");
+            }
+    }
+
     private IEnumerator ResistDrag()
     {
         Debug.Log("<color=yellow>Resist Drag called </color>");
         
-        if (resistingDrag) // if coroutine already running, stop all coroutines except this one
-        {
-            Debug.Log("<color=yellow>Identified multiple coroutines.</color>");
-            for (var c = 0; c < coroutinesList.Count; c++)
-            {
-                Debug.Log("<color=blue>Starting closure. Loop: "+c+"</color><color=blue> coroutinesList Length: "+coroutinesList.Count+"</color>");
-                StopCoroutine(coroutinesList[c]);
-                Debug.Log("<color=red>Removing index "+c+" from list</color>");
-                coroutinesList.RemoveAt(c);
-                Debug.Log("<color=red>Removed index. coroutinesList length is: "+coroutinesList.Count+"</color>");
-            }
-            Debug.Log("<color=green>Closure loop finished. coroutinesList length is: "+coroutinesList.Count+"</color>");
-        }
-        resistingDrag = true;
-        Debug.Log("resistingDrag <color=cyan>TRUE</color>");
-        
-        var resistAcceleration = accelerationForce * 0.7f; //reducing the acceleration force as its unlikely the vehicle is at max acceleration
+        var resistAcceleration = maxResistAcceleration; //reducing the acceleration force as its unlikely the vehicle is at max acceleration
         //Debug.Log("<color=blue>resistAcceleration outside loop: "+ resistAcceleration +" </color>");
 
         for (var i = 0; i < 25; i++) // run for 2.5 seconds
         {
+//            if (coroutinesList.Count > 1) // if coroutine already running, stop all coroutines except this one
+//            {
+//                Debug.Log("<color=yellow>Identified multiple coroutines.</color>");
+//                for (var c = 0; c < coroutinesList.Count; c++)
+//                {
+//                    Debug.Log("<color=blue>Starting closure. Loop: "+c+"</color><color=blue> coroutinesList Length: "+coroutinesList.Count+"</color>");
+//                    StopCoroutine(coroutinesList[c]);
+//                    Debug.Log("<color=red>Removing index "+c+" from list</color>");
+//                    coroutinesList.RemoveAt(c);
+//                    Debug.Log("<color=red>Removed index. coroutinesList length is: "+coroutinesList.Count+"</color>");
+//                }
+//                Debug.Log("<color=green>Closure loop finished. coroutinesList length is: "+coroutinesList.Count+"</color>");
+//            }
+            
             if (Input.GetAxis("Vertical") == 1f) // if player starts accelerating again, stop coroutine here
             {
                 //Debug.Log(Input.GetAxis("Vertical"));
                 Debug.Log("<color=red>Yield break</color>");
-                resistingDrag = false;
-                Debug.Log("resistingDrag <color=green>FALSE</color>");
+                
                 yield break; 
+            }
+            
+            // to account for multiple instances of this coroutine running and adding exponentially more accelerationForce
+            // implement a max accelerationForce limit here
+            sumResistAcceleration += resistAcceleration; // keeping record of sum of acceleration force across all instances of this coroutine
+            
+            if ( sumResistAcceleration > maxResistAcceleration)
+            {
+                resistAcceleration = 0;
+            } else if (maxResistAcceleration > sumResistAcceleration)
+            {
+                resistAcceleration = Mathf.Abs(maxResistAcceleration - sumResistAcceleration);
             }
             vehicle.AddForce(vehicle.transform.forward * resistAcceleration, ForceMode.Acceleration);
             resistAcceleration *= 0.95f;
+            sumResistAcceleration = 0f;
             //Debug.Log("<color=purple>resistAcceleration inside loop: "+ resistAcceleration +"</color>");
 
-            yield return new WaitForSeconds(0.05f); // runs once every 0.1 seconds
+            Debug.Log("Yielding OUT "+i);
+            yield return new WaitForSeconds(0.1f); // runs once every 0.1 seconds
         }
         Debug.Log("<color=green>ResistDrag loop finished.</color>");
-
-        resistingDrag = false;
-        Debug.Log("resistingDrag <color=green>FALSE</color>");
+        
         coroutinesList.Clear();
         Debug.Log("<color=green>After loop. coroutinesList length is: </color>"+coroutinesList.Count); 
     }
@@ -93,10 +124,25 @@ public class MoveVehicle : MonoBehaviour
     private List<Coroutine> coroutinesList = new List<Coroutine>();
     private void Movement()
     {
+        StartCoroutine(Speedometer());
+        
         if (Input.GetButtonUp("Vertical") && Input.GetAxis("Vertical") > 0f)
         {
             coroutinesList.Add(StartCoroutine(ResistDrag()));
-            //Debug.Log("<color=lime>In Movement() coroutineList length is: </color>"+coroutinesList.Count);
+            Debug.Log("<color=lime>In Movement() coroutineList length is: </color>"+coroutinesList.Count);
+//            if (coroutinesList.Count > 1) // if coroutine already running, stop all coroutines except this one
+//            {
+//                Debug.Log("<color=yellow>Identified multiple coroutines.</color>");
+//                for (var c = 0; c < coroutinesList.Count; c++)
+//                {
+//                    Debug.Log("<color=blue>Starting closure. Loop: "+c+"</color><color=blue> coroutinesList Length: "+coroutinesList.Count+"</color>");
+//                    StopCoroutine(coroutinesList[c]);
+//                    Debug.Log("<color=red>Removing index "+c+" from list</color>");
+//                    coroutinesList.RemoveAt(c);
+//                    Debug.Log("<color=red>Removed index. coroutinesList length is: "+coroutinesList.Count+"</color>");
+//                }
+//                Debug.Log("<color=green>Closure loop finished. coroutinesList length is: "+coroutinesList.Count+"</color>");
+//            }
         }
         
         if (Input.GetButton("Vertical"))
@@ -115,7 +161,7 @@ public class MoveVehicle : MonoBehaviour
                 }
                 else
                 {
-                    applyForce = accelerationForce;
+                    applyForce = accelerationForce * 1.2f;
                 }
                 
                 vehicle.AddForceAtPosition(transform.forward * applyForce * v, centreOfMass.position);
@@ -153,6 +199,13 @@ public class MoveVehicle : MonoBehaviour
             }
         }
     }
+    
+    private IEnumerator Speedometer()
+    {
+        float localVelocity2 = transform.InverseTransformDirection(vehicle.velocity).z; // velocity
+        Debug.Log("<color=blue>Velocity: "+ localVelocity2 +"</color>");
+        yield return new WaitForSeconds(0.5f);
+    }    
 
     private bool IsGrounded()
     {
