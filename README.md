@@ -1,7 +1,7 @@
 # DrivingAndExploration
 Creating vehicle mechanics for a driving and exploration project. This project has been in development since 29 Jan 2021 week.
 
-I am experimenting with (basic) physics based gameplay in this project, unlike the Character Controller in my FirstPersonProject which implemented movement by transforming GameObject vectors directly. The exploration aspect of this project is referring to 3D modelling and level design which will begin much later on.
+I am experimenting with (basic) physics based gameplay in this project, unlike the Character Controller in my FirstPersonProject which implemented movement by transforming GameObject vectors directly. The exploration aspect of this project is referring to an intro to 3D modelling and level design.
 
 As a physics based project I had to learn basic physics concepts and how they function in Unity: friction, angular drag, angular velocity, centre of mass, box collider mass, angular torque etc.
 
