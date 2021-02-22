@@ -95,6 +95,13 @@ public class MoveVehicle : MonoBehaviour
                 
                 yield break; 
             }
+            if (Input.GetAxis("Vertical") == -1f) // if player starts accelerating again, stop coroutine here
+            {
+                //Debug.Log(Input.GetAxis("Vertical"));
+                Debug.Log("<color=red>Yield break</color>");
+                
+                yield break; 
+            }
             
             // to account for multiple instances of this coroutine running and adding exponentially more accelerationForce
             // implement a max accelerationForce limit here

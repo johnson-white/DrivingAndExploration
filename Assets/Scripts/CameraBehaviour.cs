@@ -27,7 +27,7 @@ public class CameraBehaviour : MonoBehaviour
     {
         currentX += Input.GetAxis("Mouse X");
         currentY -= Input.GetAxis("Mouse Y");
-        currentY = Mathf.Clamp(currentY, 0f, 80f);
+        currentY = Mathf.Clamp(currentY, -15f, 80f);
     }
 
     void LateUpdate()
