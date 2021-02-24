@@ -12,7 +12,7 @@ public class MoveVehicle : MonoBehaviour
     private GameObject FrontLeftWheel, FrontRightWheel;
     private Vector3 FLWpos;
     private Vector3 FRWpos;
-    private Transform centreOfMass;
+    private Transform customCenterPoint;
     public Vector3 boxShape = new Vector3(0.25f, 0.04f, 0.27f);
 
     private float maxResistAcceleration;
@@ -30,7 +30,7 @@ public class MoveVehicle : MonoBehaviour
 
         maxResistAcceleration = accelerationForce * 20f;
         
-        centreOfMass = vehicle.transform.Find("CentreOfMass").gameObject.transform;
+        customCenterPoint = vehicle.transform.Find("customCenterPoint").gameObject.transform;
     }
 
     private void OnDrawGizmos()
@@ -47,11 +47,11 @@ public class MoveVehicle : MonoBehaviour
         float localVelocity = transform.InverseTransformDirection(vehicle.velocity).z;
         Debug.Log("<color=red>Velocity "+localVelocity+"</color>");
         
-        Movement();
-        ConstrainResistDrag();
+        movement();
+        constrainResistDrag();
     }
 
-    private void ConstrainResistDrag()
+    private void constrainResistDrag()
     {
             if (coroutinesList.Count > 1) // if coroutine already running, stop all coroutines except the latest one
             {
@@ -68,7 +68,7 @@ public class MoveVehicle : MonoBehaviour
             }
     }
 
-    private IEnumerator ResistDrag()
+    private IEnumerator resistDrag()
     {
         Debug.Log("<color=yellow>Resist Drag called </color>");
         
@@ -132,13 +132,13 @@ public class MoveVehicle : MonoBehaviour
     }
     
     private List<Coroutine> coroutinesList = new List<Coroutine>();
-    private void Movement()
+    private void movement()
     {
         //StartCoroutine(Speedometer());
         
         if (Input.GetButtonUp("Vertical") && Input.GetAxis("Vertical") > 0f)
         {
-            coroutinesList.Add(StartCoroutine(ResistDrag()));
+            coroutinesList.Add(StartCoroutine(resistDrag()));
             Debug.Log("<color=lime>In Movement() coroutineList length is: </color>"+coroutinesList.Count);
 //            if (coroutinesList.Count > 1) // if coroutine already running, stop all coroutines except this one
 //            {
@@ -157,7 +157,7 @@ public class MoveVehicle : MonoBehaviour
         
         if (Input.GetButton("Vertical"))
         {
-            if (IsGrounded())
+            if (isGrounded())
             {
                 var v = Input.GetAxis("Vertical");
                 //var applyForce = (v >= 0.1f) ? accelerationForce : accelerationForce * 0.7f; // if input is negative, make the deacceleration force weaker
@@ -174,13 +174,13 @@ public class MoveVehicle : MonoBehaviour
                     applyForce = accelerationForce * 1.4f; //applying a little extra force to further constrain ResistDrag() exponential speed issue
                 }
                 
-                vehicle.AddForceAtPosition(transform.forward * applyForce * v * Time.deltaTime, centreOfMass.position);
+                vehicle.AddForceAtPosition(transform.forward * applyForce * v * Time.deltaTime, customCenterPoint.position);
             }
         }
         
         if (Input.GetButton("Horizontal"))
         {
-            if (IsGrounded())
+            if (isGrounded())
             {
                 float localVelocity = transform.InverseTransformDirection(vehicle.velocity).z;
                 float zAxisDirection;
@@ -205,19 +205,19 @@ public class MoveVehicle : MonoBehaviour
                 // adding horizontal force
                 var strafe = (h > 0) ? vehicle.transform.right : -vehicle.transform.right;
                 strafe *= strafeForce;
-                vehicle.AddForceAtPosition(strafe * Time.deltaTime, centreOfMass.position, ForceMode.Acceleration);
+                vehicle.AddForceAtPosition(strafe * Time.deltaTime, customCenterPoint.position, ForceMode.Acceleration);
             }
         }
     }
     
-    private IEnumerator Speedometer()
+    private IEnumerator speedometer()
     {
         float localVelocity2 = transform.InverseTransformDirection(vehicle.velocity).z; // velocity
         Debug.Log("<color=blue>Velocity: "+ localVelocity2 +"</color>");
         yield return new WaitForSeconds(0.5f);
-    }    
+    }
 
-    private bool IsGrounded()
+    private bool isGrounded()
     {
         // Grabbing global coords of temp objects so I can use gizmos to draw a wire box, will use local position and remove temp objects later
         FLWpos = FrontLeftWheel.transform.position;

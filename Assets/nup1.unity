@@ -983,7 +983,7 @@ MonoBehaviour:
   rotationForce: 50000
   strafeForce: 50
   vehicle: {fileID: 0}
-  boxShape: {x: 0.28, y: 0.19, z: 0.58}
+  boxShape: {x: 0.28, y: 0.12, z: 0.58}
 --- !u!54 &1470699467
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -994,7 +994,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0.35
-  m_AngularDrag: 40
+  m_AngularDrag: 5
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 1
@@ -1068,7 +1068,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1721341366}
   m_Layer: 0
-  m_Name: CentreOfMass
+  m_Name: customCenterPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1082,7 +1082,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1721341365}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5006512734906968442}
