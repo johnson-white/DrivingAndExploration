@@ -28,7 +28,7 @@ public class MoveVehicle : MonoBehaviour
         FLWpos = FrontLeftWheel.transform.position;
         FRWpos = FrontRightWheel.transform.position;
 
-        maxResistAcceleration = accelerationForce * 0.7f;
+        maxResistAcceleration = accelerationForce * 20f;
         
         centreOfMass = vehicle.transform.Find("CentreOfMass").gameObject.transform;
     }
@@ -44,6 +44,9 @@ public class MoveVehicle : MonoBehaviour
 
     void Update()
     {
+        float localVelocity = transform.InverseTransformDirection(vehicle.velocity).z;
+        Debug.Log("<color=red>Velocity "+localVelocity+"</color>");
+        
         Movement();
         ConstrainResistDrag();
     }
@@ -72,7 +75,7 @@ public class MoveVehicle : MonoBehaviour
         var resistAcceleration = maxResistAcceleration; //reducing the acceleration force as its unlikely the vehicle is at max acceleration
         //Debug.Log("<color=blue>resistAcceleration outside loop: "+ resistAcceleration +" </color>");
 
-        for (var i = 0; i < 25; i++) // run for 2.5 seconds
+        for (var i = 0; i < 65; i++) // run for 2.5 seconds
         {
 //            if (coroutinesList.Count > 1) // if coroutine already running, stop all coroutines except this one
 //            {
@@ -95,10 +98,10 @@ public class MoveVehicle : MonoBehaviour
                 
                 yield break; 
             }
-            if (Input.GetAxis("Vertical") == -1f) // if player starts accelerating again, stop coroutine here
+            if (Input.GetAxis("Vertical") == -1f) // if player brakes fully, stop coroutine here
             {
                 //Debug.Log(Input.GetAxis("Vertical"));
-                Debug.Log("<color=red>Yield break</color>");
+                Debug.Log("<color=red>Yield break -ve</color>");
                 
                 yield break; 
             }
@@ -114,13 +117,13 @@ public class MoveVehicle : MonoBehaviour
             {
                 resistAcceleration = Mathf.Abs(maxResistAcceleration - sumResistAcceleration);
             }
-            vehicle.AddForce(vehicle.transform.forward * resistAcceleration, ForceMode.Acceleration);
+            vehicle.AddForce(vehicle.transform.forward * resistAcceleration * Time.deltaTime, ForceMode.Acceleration);
             resistAcceleration *= 0.95f;
             sumResistAcceleration = 0f;
             //Debug.Log("<color=purple>resistAcceleration inside loop: "+ resistAcceleration +"</color>");
 
             Debug.Log("Yielding OUT "+i);
-            yield return new WaitForSeconds(0.1f); // runs once every 0.1 seconds
+            yield return new WaitForSeconds(0.05f); // runs once every 0.1 seconds
         }
         Debug.Log("<color=green>ResistDrag loop finished.</color>");
         
@@ -131,7 +134,7 @@ public class MoveVehicle : MonoBehaviour
     private List<Coroutine> coroutinesList = new List<Coroutine>();
     private void Movement()
     {
-        StartCoroutine(Speedometer());
+        //StartCoroutine(Speedometer());
         
         if (Input.GetButtonUp("Vertical") && Input.GetAxis("Vertical") > 0f)
         {
@@ -171,7 +174,7 @@ public class MoveVehicle : MonoBehaviour
                     applyForce = accelerationForce * 1.4f; //applying a little extra force to further constrain ResistDrag() exponential speed issue
                 }
                 
-                vehicle.AddForceAtPosition(transform.forward * applyForce * v, centreOfMass.position);
+                vehicle.AddForceAtPosition(transform.forward * applyForce * v * Time.deltaTime, centreOfMass.position);
             }
         }
         
@@ -197,12 +200,12 @@ public class MoveVehicle : MonoBehaviour
                 var h = Input.GetAxis("Horizontal");
                 
                 var torque = transform.up * h * rotationForce * zAxisDirection;
-                vehicle.AddTorque(torque);
+                vehicle.AddTorque(torque * Time.deltaTime);
                 
                 // adding horizontal force
                 var strafe = (h > 0) ? vehicle.transform.right : -vehicle.transform.right;
                 strafe *= strafeForce;
-                vehicle.AddForceAtPosition(strafe, centreOfMass.position, ForceMode.Acceleration);
+                vehicle.AddForceAtPosition(strafe * Time.deltaTime, centreOfMass.position, ForceMode.Acceleration);
             }
         }
     }
