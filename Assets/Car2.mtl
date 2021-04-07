@@ -1,0 +1,12 @@
+# Created by Kenney (www.kenney.nl)
+
+newmtl carTire(Clone)
+Kd 0.9655172 0.9655172 0.9655172
+
+newmtl grey(Clone)
+Kd 0.8758621 0.05971786 0.05971786
+map_Kd Textures/grey(Clone).png
+
+newmtl glass(Clone)
+Kd 0 0 0
+
