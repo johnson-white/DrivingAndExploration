@@ -5,6 +5,9 @@ I am experimenting with (basic) physics based gameplay in this project, unlike t
 
 As a physics based project I had to learn basic physics concepts and how they function in Unity: friction, angular drag, angular velocity, centre of mass, box collider mass, angular torque etc.
 
+# 3D Modelling and Level Design
+I created more and more complex test tracks as necessary to better observe and improve the vehicle mechanics and driving feel. Starting from open spaces with simple corners to kitbashed creations using Asset Forge 2 and eventually spending 3 or 4 weeks in Blender which resulted in a design accurate road with smooth terrain and detailed corners.
+
 ## Overview of Features
 Vehicle mechanics (using Rigidbody):
 - Exterior Vehicle Camera
@@ -14,8 +17,8 @@ Vehicle mechanics (using Rigidbody):
 - Vehicle has a turning radius
 - Vehicle has realistic turning at very low speeds
 - Vehicle has correct/realistic reverse turning
-- Centre of mass of vehicle has been positioned several float units behind the main object for the driving force to feel more natural.
-- Vehicle uses balanced box colliders to represent AWD, can be modified for FWD or RWD behaviour
+- Centre of mass of vehicle has been positioned several float units behind the main object for the driving force to feel more natural and for significantly improved incline behaviour
+- Vehicle uses balanced box colliders to represent "AWD", can be duplicated and modified for "FWD" or "RWD" weight behaviour
 
 Vehicle's 3D Model was "kit bashed" using Asset Forge 2 by Kenney (https://kenney.itch.io/assetforge). Using Kenney's free open source assets enabled me to test the vehicle mechanics on some form of a race track. The final race track was created in Blender using curves and arrays and continues to use Kenney's assets for environment art and design.
 
