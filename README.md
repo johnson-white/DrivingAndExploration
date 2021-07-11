@@ -22,9 +22,12 @@ Vehicle's 3D Model was "kit bashed" using Asset Forge 2 by Kenney (https://kenne
 First version of vehicle mechanics:
 ![](https://github.com/bM7tcHF88GBxDni/README-GIF-Storage/blob/main/car%20453px.gif)
 
-Some footage of iteration of vehicle mechanics and level design:
+Some footage of many iterations of the vehicle object, mechanics and level design:
+
 ![](https://github.com/bM7tcHF88GBxDni/README-GIF-Storage/blob/main/car%202.gif)
+
 ![](https://github.com/bM7tcHF88GBxDni/README-GIF-Storage/blob/main/car%203.gif)
 
 Final iteration of box colliders on vehicle and vehicle mechanics, used Blender to 3D model the road and environmental design using open source Kenney assets (https://kenney.itch.io/assetforge):
+
 ![](https://github.com/bM7tcHF88GBxDni/README-GIF-Storage/blob/main/car%204.gif)
